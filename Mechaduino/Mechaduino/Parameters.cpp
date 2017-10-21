@@ -1,9 +1,10 @@
 //Contains the Mechaduino parameter defintions
 
 #include <Wire.h>
+#include <extEEPROM.h>
+
 #include "Parameters.h"
 #include "math.h"
-
 
 //----Current Parameters-----
 
@@ -19,10 +20,13 @@ volatile float vKi = 0.001;
 volatile float vKd = 0.0;
 volatile float vLPF = 100.0;       //break frequency in hertz
 
+extEEPROM eeprom(kbits_64, 1, 32, 0x50);
+
 //This is the encoder lookup table (created by calibration routine):
 
 const float lookup[] = {
   //Put lookup table here!
+
 };
 
 
@@ -39,9 +43,9 @@ const float stepangle = aps/32.0;   // for step/dir interrupt: aps/32 is the equ
 
 volatile float PA = aps;            // Phase advance...aps = 1.8 for 200 steps per rev, 0.9 for 400
 
-const float iMAX = 1.0;             // Be careful adjusting this.  While the A4954 driver is rated for 2.0 Amp peak currents, it cannot handle these currents continuously.  Depending on how you operate the Mechaduino, you may be able to safely raise this value...please refer to the A4954 datasheet for more info
-const float rSense = 0.150;
-volatile int uMAX = (255/3.3)*(iMAX*10*rSense);   // 255 for 8-bit pwm, 1023 for 10 bit, must also edit analogFastWrite
+const float iMAX = 4.0;             // Be careful adjusting this.  While the A4954 driver is rated for 2.0 Amp peak currents, it cannot handle these currents continuously.  Depending on how you operate the Mechaduino, you may be able to safely raise this value...please refer to the A4954 datasheet for more info
+const float rSense = 0.005;
+volatile int uMAX = (255/3.3)*(iMAX*10*(1+4.7)/1*rSense);   // 255 for 8-bit pwm, 1023 for 10 bit, must also edit analogFastWrite
 
 
 
